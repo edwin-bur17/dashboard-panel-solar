@@ -1,38 +1,40 @@
 "use client";
-import { useState, useEffect } from "react";
-import { Sun, BatteryCharging, Lightbulb, Activity } from "lucide-react";
+import * as React from "react";
+import { Sun, BatteryCharging, Lightbulb, Activity, Zap } from "lucide-react";
 import { MetricCard } from "@/src/components/MetricCard";
-
 import { MetricData } from "@/src/types/dashboard";
+import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
 
 export default function DashboardPage() {
-  const [mounted, setMounted] = useState<boolean>(false);
+  const [mounted, setMounted] = React.useState<boolean>(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     setMounted(true);
   }, []);
 
   const metrics: MetricData[] = [
     {
-      title: "Panel Solar",
+      title: "Paneles Solares",
       voltage: 5.2,
       current: 1.1,
       power: 5.72,
       icon: Sun,
+      status: "Active",
     },
     {
-      title: "Batería Litio",
+      title: "Almacenamiento/Batería",
       voltage: 3.7,
       current: -0.5,
       power: 1.85,
-      status: "Cargando",
+      status: "Active",
       icon: BatteryCharging,
     },
     {
-      title: "Carga LEDs",
+      title: "Consumo LEDs",
       voltage: 5.0,
       current: 0.9,
       power: 4.5,
+      status: "Active",
       icon: Lightbulb,
     },
   ];
@@ -40,84 +42,81 @@ export default function DashboardPage() {
   if (!mounted) return null;
 
   return (
-    <main className="min-h-screen bg-zinc-50 dark:bg-zinc-900 p-6 space-y-8 text-zinc-900 dark:text-zinc-50">
+    <div className="container mx-auto p-4 md:p-8 space-y-8 animate-in fade-in duration-500">
       {/* HEADER */}
-      <header className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">
-            Estación Fotovoltaica
-          </h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            Monitoreo electromagnético en tiempo real
-          </p>
-        </div>
-        <div className="flex items-center gap-2 text-sm bg-white dark:bg-zinc-800 px-3 py-1.5 rounded-full shadow-sm border border-zinc-200 dark:border-zinc-700 self-start">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-          </span>
-          Sincronizado
-        </div>
-      </header>
+      {/* <div className="flex flex-col gap-1">
+        <h1 className="text-3xl font-extrabold tracking-tight lg:text-4xl">
+          Panel de Control Solar
+        </h1>
+        <p className="text-muted-foreground">
+          Sistema de monitoreo de energía fotovoltaica en tiempo real.
+        </p>
+      </div> */}
 
-      {/* TARJETAS DE SENSORES */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* METRIC CARDS */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {metrics.map((metric) => (
           <MetricCard key={metric.title} {...metric} />
         ))}
-      </section>
+      </div>
 
-      {/* SECCIÓN DE GRÁFICAS (Reemplazar placeholders con Recharts) */}
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="p-6 bg-white dark:bg-zinc-950 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm h-80 flex flex-col">
-          <h3 className="font-medium mb-4 flex items-center gap-2">
-            <Activity className="w-4 h-4 text-blue-500" /> Histórico de Voltajes
-          </h3>
-          <div className="flex-1 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg border border-dashed border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-400 text-sm">
-            [Insertar LineChart de Recharts aquí]
+      {/* CHARTS PLACEHOLDERS */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="border-border/50">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+            <CardTitle className="text-base font-semibold flex items-center gap-2">
+              <Activity className="h-4 w-4 text-blue-500" /> Histórico de Voltajes
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-60 w-full bg-muted/30 rounded-lg border border-dashed flex items-center justify-center text-muted-foreground text-sm">
+              <div className="flex flex-col items-center gap-2">
+                <Activity className="h-8 w-8 opacity-20" />
+                <span>Visualización de datos próximamente</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-border/50">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+            <CardTitle className="text-base font-semibold flex items-center gap-2">
+              <Zap className="h-4 w-4 text-yellow-500" /> Histórico de Corrientes
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-60 w-full bg-muted/30 rounded-lg border border-dashed flex items-center justify-center text-muted-foreground text-sm">
+              <div className="flex flex-col items-center gap-2">
+                <Zap className="h-8 w-8 opacity-20" />
+                <span>Visualización de datos próximamente</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* SUMMARY SECTION */}
+      <Card className="bg-linear-to-br from-background to-muted/30 border-border/50">
+        <CardContent className="p-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="space-y-1">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Generado Total</p>
+              <p className="text-4xl font-black text-foreground">5.72 <span className="text-lg font-bold">W</span></p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Consumo Total</p>
+              <p className="text-4xl font-black text-foreground">4.50 <span className="text-lg font-bold">W</span></p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Eficiencia</p>
+              <div className="flex items-baseline gap-2">
+                <p className="text-4xl font-black text-emerald-500">+1.22 <span className="text-lg font-bold">W</span></p>
+                <div className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-500">OPTIMAL</div>
+              </div>
+            </div>
           </div>
-        </div>
-
-        <div className="p-6 bg-white dark:bg-zinc-950 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm h-80 flex flex-col">
-          <h3 className="font-medium mb-4 flex items-center gap-2">
-            <Activity className="w-4 h-4 text-amber-500" /> Histórico de
-            Corrientes
-          </h3>
-          <div className="flex-1 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg border border-dashed border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-400 text-sm">
-            [Insertar AreaChart de Recharts aquí]
-          </div>
-        </div>
-      </section>
-
-      {/* BALANCE ENERGÉTICO */}
-      <section className="p-6 bg-white dark:bg-zinc-950 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col md:flex-row justify-around gap-4 text-center">
-        <div>
-          <span className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
-            Generado
-          </span>
-          <p className="text-2xl font-bold text-zinc-800 dark:text-zinc-100">
-            5.72 W
-          </p>
-        </div>
-        <div className="hidden md:block border-l border-zinc-200 dark:border-zinc-800"></div>
-        <div>
-          <span className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
-            Consumido
-          </span>
-          <p className="text-2xl font-bold text-zinc-800 dark:text-zinc-100">
-            4.50 W
-          </p>
-        </div>
-        <div className="hidden md:block border-l border-zinc-200 dark:border-zinc-800"></div>
-        <div>
-          <span className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
-            Eficiencia Neta
-          </span>
-          <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-            +1.22 W
-          </p>
-        </div>
-      </section>
-    </main>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
