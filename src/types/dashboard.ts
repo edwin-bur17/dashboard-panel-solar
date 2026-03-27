@@ -3,6 +3,7 @@ export interface MetricData {
   voltage: number;
   current: number;
   power: number;
+  fecha: string;
   status?: string;
   icon: React.ComponentType<{ className?: string }>;
 }
@@ -15,4 +16,16 @@ export interface HistoryData {
   iSolar: number;
   iBat: number;
   iOut: number;
+}
+
+export interface Sensor {
+  voltaje: number;
+  corriente: number;
+  potencia: number;
+  fecha: string;
+}
+
+export interface SensoresDB {
+  PS: Sensor;
+  bateria?: Sensor;
 }

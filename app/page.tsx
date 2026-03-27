@@ -2,42 +2,96 @@
 import * as React from "react";
 import { Sun, BatteryCharging, Lightbulb, Activity, Zap } from "lucide-react";
 import { MetricCard } from "@/src/components/MetricCard";
-import { MetricData } from "@/src/types/dashboard";
+import { MetricData, SensoresDB } from "@/src/types/dashboard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
+import { ref, onValue } from "firebase/database";
+import { db } from "@/src/lib/firebase";
+import { getLastValue } from "@/src/lib/utils";
 
 export default function DashboardPage() {
   const [mounted, setMounted] = React.useState<boolean>(false);
+  const [metrics, setMetrics] = React.useState<MetricData[]>([]);
 
   React.useEffect(() => {
-    setMounted(true);
-  }, []);
+  setMounted(true);
 
-  const metrics: MetricData[] = [
-    {
-      title: "Paneles Solares",
-      voltage: 5.2,
-      current: 1.1,
-      power: 5.72,
-      icon: Sun,
-      status: "Active",
-    },
-    {
-      title: "Almacenamiento/Batería",
-      voltage: 3.7,
-      current: -0.5,
-      power: 1.85,
-      status: "Active",
-      icon: BatteryCharging,
-    },
-    {
-      title: "Consumo LEDs",
-      voltage: 5.0,
-      current: 0.9,
-      power: 4.5,
-      status: "Active",
-      icon: Lightbulb,
-    },
-  ];
+  const sensoresRef = ref(db, "sensores");
+
+  const unsubscribe = onValue(sensoresRef, (snapshot) => {
+    if (snapshot.exists()) {
+      const data = snapshot.val() as SensoresDB;
+
+      console.log(getLastValue(data.PS));
+
+      const newMetrics: MetricData[] = [
+        {
+          title: "Paneles Solares",
+          voltage: getLastValue(data.PS).voltaje,
+          current: getLastValue(data.PS).amperaje,
+          power: getLastValue(data.PS).potencia,
+          fecha: getLastValue(data.PS).fecha,
+          icon: Sun,
+          status: "Active",
+        },
+        // {
+        //   title: "Paneles Solares",
+        //   voltage: data.panel?.voltaje ?? data.voltaje,
+        //   current: data.panel?.corriente ??  data.amperaje,
+        //   power: data.panel?.potencia ?? data.potencia,
+        //   icon: Sun,
+        //   status: "Active",
+        // },
+        // {
+        //   title: "Almacenamiento/Batería",
+        //   voltage: data.bateria?.voltaje ?? 0,
+        //   current: data.bateria?.corriente ?? 0,
+        //   power: data.bateria?.potencia ?? 0,
+        //   icon: BatteryCharging,
+        //   status: "Active",
+        // },
+        // {
+        //   title: "Consumo LEDs",
+        //   voltage: data.leds?.voltaje ?? 0,
+        //   current: data.leds?.corriente ?? 0,
+        //   power: data.leds?.potencia ?? 0,
+        //   icon: Lightbulb,
+        //   status: "Active",
+        // },
+      ];
+
+      setMetrics(newMetrics);
+    }
+  });
+
+  return () => unsubscribe();
+}, []);
+
+  // const metrics: MetricData[] = [
+  //   {
+  //     title: "Paneles Solares",
+  //     voltage: 5.2,
+  //     current: 1.1,
+  //     power: 5.72,
+  //     icon: Sun,
+  //     status: "Active",
+  //   },
+  //   {
+  //     title: "Almacenamiento/Batería",
+  //     voltage: 3.7,
+  //     current: -0.5,
+  //     power: 1.85,
+  //     status: "Active",
+  //     icon: BatteryCharging,
+  //   },
+  //   {
+  //     title: "Consumo LEDs",
+  //     voltage: 5.0,
+  //     current: 0.9,
+  //     power: 4.5,
+  //     status: "Active",
+  //     icon: Lightbulb,
+  //   },
+  // ];
 
   if (!mounted) return null;
 
@@ -96,7 +150,7 @@ export default function DashboardPage() {
       </div>
 
       {/* SUMMARY SECTION */}
-      <Card className="bg-linear-to-br from-background to-muted/30 border-border/50">
+      {/* <Card className="bg-linear-to-br from-background to-muted/30 border-border/50">
         <CardContent className="p-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="space-y-1">
@@ -116,7 +170,7 @@ export default function DashboardPage() {
             </div>
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   );
 }

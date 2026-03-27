@@ -13,6 +13,7 @@ export function MetricCard({
   current,
   power,
   status,
+  fecha,
   icon: Icon,
 }: MetricData) {
   return (
@@ -28,7 +29,7 @@ export function MetricCard({
           <div className="flex justify-between items-baseline">
             <span className="text-xs text-muted-foreground">Voltaje</span>
             <span className="text-xl font-bold tracking-tight">
-              {voltage.toFixed(2)}
+              {voltage}
               <span className="text-sm font-normal text-muted-foreground ml-1">
                 V
               </span>
@@ -37,17 +38,19 @@ export function MetricCard({
           <div className="flex justify-between items-baseline">
             <span className="text-xs text-muted-foreground">Corriente</span>
             <span className="text-xl font-bold tracking-tight">
-              {current.toFixed(2)}
+              {current}
               <span className="text-sm font-normal text-muted-foreground ml-1">
-                A
+                mhA
               </span>
             </span>
           </div>
           <div className="flex justify-between items-baseline pt-4 border-t">
             <span className="text-sm font-semibold">Potencia</span>
             <span className="text-2xl font-black text-orange-500 dark:text-orange-400">
-              {power.toFixed(2)}
-              <span className="text-sm font-bold ml-1">W</span>
+              {power}
+              <span className="text-sm font-bold ml-1">
+                mhW
+              </span>
             </span>
           </div>
           {status && (
@@ -60,6 +63,9 @@ export function MetricCard({
               />
               <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">
                 {status}
+              </span>
+              <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">
+                {fecha}
               </span>
             </div>
           )}
