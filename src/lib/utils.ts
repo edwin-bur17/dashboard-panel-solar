@@ -29,7 +29,7 @@ export const parseChartData = (obj: Sensor) => {
         new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
     )
     .map((item: { fecha: string; voltaje: number; amperaje: number; potencia: number }) => ({
-      fecha: item.fecha,
+      fecha: item.fecha.split(" ")[1],
       voltaje: item.voltaje,
       amperaje: item.amperaje,
       potencia: item.potencia,

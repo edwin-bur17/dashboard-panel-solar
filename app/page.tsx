@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { Sun, BatteryCharging, Lightbulb, Activity, Zap } from "lucide-react";
+import { Sun, } from "lucide-react";
 import { MetricCard } from "@/src/components/MetricCard";
 import { MetricData, SensoresDB } from "@/src/types/dashboard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
