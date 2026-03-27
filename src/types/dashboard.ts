@@ -29,3 +29,10 @@ export interface SensoresDB {
   PS: Sensor;
   bateria?: Sensor;
 }
+
+export interface ChartData {
+  fecha: string;
+  voltaje: number;
+  amperaje: number;
+  potencia: number;
+}

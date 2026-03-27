@@ -2,7 +2,7 @@
 import * as React from "react";
 import { Sun, } from "lucide-react";
 import { MetricCard } from "@/src/components/MetricCard";
-import { MetricData, SensoresDB } from "@/src/types/dashboard";
+import { MetricData, SensoresDB, ChartData } from "@/src/types/dashboard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { ref, onValue } from "firebase/database";
 import { db } from "@/src/lib/firebase";
@@ -19,7 +19,7 @@ import {
 export default function DashboardPage() {
   const [mounted, setMounted] = React.useState<boolean>(false);
   const [metrics, setMetrics] = React.useState<MetricData[]>([]);
-  const [chartData, setChartData] = React.useState<any[]>([]);
+  const [chartData, setChartData] = React.useState<ChartData[]>([]);
 
   React.useEffect(() => {
     setMounted(true);
@@ -118,7 +118,7 @@ export default function DashboardPage() {
       </div> */}
 
       {/* METRIC CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
         {metrics.map((metric, index) => (
           <MetricCard key={index} {...metric} />
         ))}
