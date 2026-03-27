@@ -6,65 +6,75 @@ import { MetricData, SensoresDB } from "@/src/types/dashboard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { ref, onValue } from "firebase/database";
 import { db } from "@/src/lib/firebase";
-import { getLastValue } from "@/src/lib/utils";
+import { getLastValue, parseChartData } from "@/src/lib/utils";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 export default function DashboardPage() {
   const [mounted, setMounted] = React.useState<boolean>(false);
   const [metrics, setMetrics] = React.useState<MetricData[]>([]);
+  const [chartData, setChartData] = React.useState<any[]>([]);
 
   React.useEffect(() => {
-  setMounted(true);
+    setMounted(true);
 
-  const sensoresRef = ref(db, "sensores");
+    const sensoresRef = ref(db, "sensores");
 
-  const unsubscribe = onValue(sensoresRef, (snapshot) => {
-    if (snapshot.exists()) {
-      const data = snapshot.val() as SensoresDB;
+    const unsubscribe = onValue(sensoresRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val() as SensoresDB;
 
-      console.log(getLastValue(data.PS));
+        console.log(getLastValue(data.PS));
+        setChartData(parseChartData(data.PS));
 
-      const newMetrics: MetricData[] = [
-        {
-          title: "Paneles Solares",
-          voltage: getLastValue(data.PS).voltaje,
-          current: getLastValue(data.PS).amperaje,
-          power: getLastValue(data.PS).potencia,
-          fecha: getLastValue(data.PS).fecha,
-          icon: Sun,
-          status: "Active",
-        },
-        // {
-        //   title: "Paneles Solares",
-        //   voltage: data.panel?.voltaje ?? data.voltaje,
-        //   current: data.panel?.corriente ??  data.amperaje,
-        //   power: data.panel?.potencia ?? data.potencia,
-        //   icon: Sun,
-        //   status: "Active",
-        // },
-        // {
-        //   title: "Almacenamiento/Batería",
-        //   voltage: data.bateria?.voltaje ?? 0,
-        //   current: data.bateria?.corriente ?? 0,
-        //   power: data.bateria?.potencia ?? 0,
-        //   icon: BatteryCharging,
-        //   status: "Active",
-        // },
-        // {
-        //   title: "Consumo LEDs",
-        //   voltage: data.leds?.voltaje ?? 0,
-        //   current: data.leds?.corriente ?? 0,
-        //   power: data.leds?.potencia ?? 0,
-        //   icon: Lightbulb,
-        //   status: "Active",
-        // },
-      ];
+        const newMetrics: MetricData[] = [
+          {
+            title: "Paneles Solares",
+            voltage: getLastValue(data.PS).voltaje,
+            current: getLastValue(data.PS).amperaje,
+            power: getLastValue(data.PS).potencia,
+            fecha: getLastValue(data.PS).fecha,
+            icon: Sun,
+            status: "Active",
+          },
+          // {
+          //   title: "Paneles Solares",
+          //   voltage: data.panel?.voltaje ?? data.voltaje,
+          //   current: data.panel?.corriente ??  data.amperaje,
+          //   power: data.panel?.potencia ?? data.potencia,
+          //   icon: Sun,
+          //   status: "Active",
+          // },
+          // {
+          //   title: "Almacenamiento/Batería",
+          //   voltage: data.bateria?.voltaje ?? 0,
+          //   current: data.bateria?.corriente ?? 0,
+          //   power: data.bateria?.potencia ?? 0,
+          //   icon: BatteryCharging,
+          //   status: "Active",
+          // },
+          // {
+          //   title: "Consumo LEDs",
+          //   voltage: data.leds?.voltaje ?? 0,
+          //   current: data.leds?.corriente ?? 0,
+          //   power: data.leds?.potencia ?? 0,
+          //   icon: Lightbulb,
+          //   status: "Active",
+          // },
+        ];
 
-      setMetrics(newMetrics);
-    }
-  });
+        setMetrics(newMetrics);
+      }
+    });
 
-  return () => unsubscribe();
-}, []);
+    return () => unsubscribe();
+  }, []);
 
   // const metrics: MetricData[] = [
   //   {
@@ -109,13 +119,81 @@ export default function DashboardPage() {
 
       {/* METRIC CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {metrics.map((metric) => (
-          <MetricCard key={metric.title} {...metric} />
+        {metrics.map((metric, index) => (
+          <MetricCard key={index} {...metric} />
         ))}
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        {/* Voltaje */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Voltaje (V)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="w-full h-60">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData}>
+                  <XAxis dataKey="fecha" />
+                  <YAxis />
+                  <Tooltip />
+
+                  <Line dataKey="voltaje" stroke="#3b82f6" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Corriente */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Corriente (mhA)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="w-full h-60">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData}>
+                  <XAxis dataKey="fecha" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line
+                    type="monotone"
+                    dataKey="amperaje"
+                    stroke="#eab308"
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+        
+        {/* Potencia */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Potencia (mhW)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="w-full h-60">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData}>
+                  <XAxis dataKey="fecha" />
+                  <YAxis />
+                  <Tooltip />
+
+                  <Line dataKey="potencia" stroke="#ef4444" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
       </div>
 
       {/* CHARTS PLACEHOLDERS */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
             <CardTitle className="text-base font-semibold flex items-center gap-2">
@@ -131,23 +209,7 @@ export default function DashboardPage() {
             </div>
           </CardContent>
         </Card>
-
-        <Card className="border-border/50">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-            <CardTitle className="text-base font-semibold flex items-center gap-2">
-              <Zap className="h-4 w-4 text-yellow-500" /> Histórico de Corrientes
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-60 w-full bg-muted/30 rounded-lg border border-dashed flex items-center justify-center text-muted-foreground text-sm">
-              <div className="flex flex-col items-center gap-2">
-                <Zap className="h-8 w-8 opacity-20" />
-                <span>Visualización de datos próximamente</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      </div> */}
 
       {/* SUMMARY SECTION */}
       {/* <Card className="bg-linear-to-br from-background to-muted/30 border-border/50">
