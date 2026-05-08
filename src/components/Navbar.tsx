@@ -30,8 +30,9 @@ export function Navbar() {
               Panel de Control Solar
             </Link>
             <div className="hidden md:flex items-center gap-4 text-sm font-medium">
-              <Link href="/" className="transition-colors text-foreground/60">Tiempo Real</Link>
-              <Link href="/historico" className="transition-colors text-foreground/60">Histórico</Link>
+               <Link href="/" className="transition-colors text-foreground/60">Tiempo Real</Link>
+               <Link href="/historico" className="transition-colors text-foreground/60">Histórico</Link>
+               <Link href="/all-data" className="transition-colors text-foreground/60">Exportar Datos</Link>
             </div>
           </div>
         </div>
@@ -49,6 +50,7 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-4 text-sm font-medium">
             <Link href="/" className={`transition-colors hover:text-foreground/80 ${pathname === '/' ? 'text-foreground' : 'text-foreground/60'}`}>Tiempo Real</Link>
             <Link href="/historico" className={`transition-colors hover:text-foreground/80 ${pathname === '/historico' ? 'text-foreground' : 'text-foreground/60'}`}>Histórico</Link>
+            <Link href="/all-data" className={`transition-colors hover:text-foreground/80 ${pathname === '/all-data' ? 'text-foreground' : 'text-foreground/60'}`}>Exportar Datos</Link>
           </div>
         </div>
 
