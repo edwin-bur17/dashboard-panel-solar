@@ -1,6 +1,6 @@
 "use client"
 import * as React from "react"
-import { Moon, Sun, Activity, History, Table2 } from "lucide-react"
+import { Moon, Sun, Activity, History, Table2, MessageSquare } from "lucide-react"
 import { useTheme } from "next-themes"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -70,6 +70,12 @@ export function Navbar() {
               >
                 Tabla de Datos
               </Link>
+              <Link
+                href="/chatbot"
+                className={`transition-colors hover:text-foreground/80 ${pathname === "/chatbot" ? "text-foreground" : "text-foreground/60"}`}
+              >
+                Asistente AI
+              </Link>
             </div>
           </div>
 
@@ -128,6 +134,13 @@ export function Navbar() {
           >
             <Table2 className="h-5 w-5" />
             <span className="text-[10px] font-medium">Datos</span>
+          </Link>
+          <Link
+            href="/chatbot"
+            className={`flex flex-col items-center gap-1 transition-colors ${pathname === "/chatbot" ? "text-orange-500" : "text-foreground/60"}`}
+          >
+            <MessageSquare className="h-5 w-5" />
+            <span className="text-[10px] font-medium">Asistente</span>
           </Link>
         </div>
       </nav>
