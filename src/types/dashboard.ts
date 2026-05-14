@@ -22,6 +22,7 @@ export interface Sensor {
   voltaje: number;
   corriente: number;
   potencia: number;
+  amperaje?: number;
   fecha: string;
 }
 
