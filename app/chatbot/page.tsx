@@ -202,7 +202,7 @@ export default function ChatbotPage() {
                   }`}
                 >
                   <div
-                    className={`p-4 rounded-2xl shadow-sm text-sm ${
+                    className={`p-4 rounded-2xl shadow-sm text-sm whitespace-pre-wrap leading-relaxed break-words ${
                       msg.role === "user"
                         ? "bg-primary text-primary-foreground rounded-tr-none"
                         : "bg-muted text-foreground rounded-tl-none border border-border/50"
